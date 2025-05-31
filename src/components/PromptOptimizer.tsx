@@ -53,7 +53,7 @@ export default function PromptOptimizer() {
         <h2 className="text-xl font-semibold mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
           Prompt Optimizer
         </h2>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           <OptimizationMode mode={optimizationMode} onModeChange={setOptimizationMode} />
           <div className="flex flex-wrap gap-2">
             {(['Plain Text', 'Markdown', 'JSON', 'XML', 'Bulleted List', 'Table'] as OutputFormat[]).map((format) => (
