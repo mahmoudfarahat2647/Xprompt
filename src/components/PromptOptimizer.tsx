@@ -11,12 +11,17 @@ export default function PromptOptimizer() {
   const [optimizedPrompt, setOptimizedPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
-  const [optimizationMode, setOptimizationMode] = useState<OptimizationModeType>('REWRITE_PERFECTLY');
+  const [optimizationMode, setOptimizationMode] = useState<OptimizationModeType | null>(null);
   const [outputFormat, setOutputFormat] = useState<OutputFormat>('Plain Text');
   const [history, setHistory] = useState<{ input: string; output: string; mode: OptimizationModeType }[]>([]);
 
   const handleOptimize = async () => {
     if (!inputPrompt.trim()) return;
+    if (!optimizationMode) {
+      // If no optimization mode is selected, show a message or handle it appropriately
+      alert("Please select an optimization mode first");
+      return;
+    }
     
     setIsLoading(true);
     try {
@@ -53,22 +58,55 @@ export default function PromptOptimizer() {
         <h2 className="text-xl font-semibold mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
           Prompt Optimizer
         </h2>
-        <div className="flex flex-col gap-2">
-          <OptimizationMode mode={optimizationMode} onModeChange={setOptimizationMode} />
-          <div className="flex flex-wrap gap-2">
-            {(['Plain Text', 'Markdown', 'JSON', 'XML', 'Bulleted List', 'Table'] as OutputFormat[]).map((format) => (
-              <button
-                key={format}
-                className={`px-3 py-1 text-xs font-semibold rounded-full transition-all duration-200 ${
-                  format === outputFormat
-                    ? 'bg-indigo-500 text-white'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                }`}
-                onClick={() => setOutputFormat(format)}
-              >
-                {format}
-              </button>
-            ))}
+        <div className="space-y-4">
+          {/* Category 1: Input Prompt Enhancement Tools */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-4">
+              <OptimizationMode 
+                mode={optimizationMode} 
+                onModeChange={setOptimizationMode}
+                isLoading={isLoading}
+                onEnhance={async () => {
+                  if (!inputPrompt.trim()) {
+                    alert("Please enter a prompt first");
+                    return;
+                  }
+                  if (!optimizationMode) {
+                    alert("Please select an optimization mode first");
+                    return;
+                  }
+                  setIsLoading(true);
+                  try {
+                    const result = await optimizePrompt(inputPrompt, optimizationMode, 'Plain Text');
+                    setInputPrompt(result); // Update the input with the enhanced version
+                  } catch (error) {
+                    console.error('Error enhancing prompt:', error);
+                  } finally {
+                    setIsLoading(false);
+                  }
+                }} />
+            </div>
+          </div>
+
+          {/* Category 2: Output Format Specification */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-4">
+              <div className="flex flex-wrap gap-2">
+                {(['Plain Text', 'Markdown', 'JSON', 'XML', 'Bulleted List', 'Table'] as OutputFormat[]).map((format) => (
+                  <button
+                    key={format}
+                    className={`px-3 py-1 text-xs font-semibold rounded-full transition-all duration-200 ${
+                      format === outputFormat
+                        ? 'bg-indigo-500 text-white'
+                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    }`}
+                    onClick={() => setOutputFormat(format)}
+                  >
+                    {format}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -3,11 +3,13 @@ import React from 'react';
 export type OptimizationModeType = 'REWRITE_PERFECTLY' | 'CLARIFY' | 'SIMPLIFY' | 'EXPAND' | 'SHORTEN';
 
 interface OptimizationModeProps {
-  mode: OptimizationModeType;
+  mode: OptimizationModeType | null;
   onModeChange: (mode: OptimizationModeType) => void;
+  onEnhance: () => void;
+  isLoading: boolean;
 }
 
-const OptimizationMode: React.FC<OptimizationModeProps> = ({ mode, onModeChange }) => {
+const OptimizationMode: React.FC<OptimizationModeProps> = ({ mode, onModeChange, onEnhance, isLoading }) => {
   const modes: OptimizationModeType[] = [
     'REWRITE_PERFECTLY',
     'CLARIFY',
@@ -31,6 +33,18 @@ const OptimizationMode: React.FC<OptimizationModeProps> = ({ mode, onModeChange 
           {currentMode}
         </button>
       ))}
+      <button
+        onClick={onEnhance}
+        disabled={isLoading}
+        className={`w-6 h-6 flex items-center justify-center rounded-full transition-all duration-200 
+          ${isLoading 
+            ? 'bg-yellow-500/50 text-gray-300 cursor-not-allowed' 
+            : 'bg-yellow-500 text-white hover:bg-yellow-400 active:scale-95'
+          }`}
+        title="Enhance prompt using selected mode"
+      >
+        ⚡
+      </button>
     </div>
   );
 };
