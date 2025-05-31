@@ -53,7 +53,7 @@ export default function PromptOptimizer() {
   };
 
   return (
-    <div className="card-modern p-6 animate-fade-in">
+    <div className="max-w-3xl mx-auto card-modern p-6 animate-fade-in">
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
           Prompt Optimizer
