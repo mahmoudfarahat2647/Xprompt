@@ -93,9 +93,17 @@ export default function PromptOptimizer() {
       
       {history.length > 0 && (
         <div className="mt-8 animate-fade-in">
-          <h3 className="text-lg font-medium mb-3 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-            Recent Optimizations
-          </h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-medium bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+              Recent Optimizations
+            </h3>
+            <button
+              onClick={() => setHistory([])}
+              className="text-xs px-3 py-1 rounded-full glass glass-hover text-gray-300 hover:text-white transition-all duration-200 font-medium active:scale-95"
+            >
+              Clear Recent
+            </button>
+          </div>
           <div className="space-y-2 max-h-40 overflow-y-auto pr-2">
             {history.map((item, index) => (
               <div 
