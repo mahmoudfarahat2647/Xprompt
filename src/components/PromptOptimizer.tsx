@@ -1,35 +1,28 @@
 import { useState } from 'react';
 import PromptInput from './PromptInput';
 import PromptOutput from './PromptOutput';
-import OptimizationMode, { OptimizationModeType } from './OptimizationMode';
-import { optimizePrompt } from '../utils/promptUtils';
+import OptimizationMode from './OptimizationMode';
 
-export type OutputFormat = 'Plain Text' | 'Markdown' | 'JSON' | 'XML' | 'Bulleted List' | 'Table';
+export type OutputFormat = 'Rewrite Perfectly' | 'Plain Text' | 'Markdown' | 'JSON' | 'XML' | 'Bulleted List' | 'Table';
 
 export default function PromptOptimizer() {
   const [inputPrompt, setInputPrompt] = useState('');
   const [optimizedPrompt, setOptimizedPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
-  const [optimizationMode, setOptimizationMode] = useState<OptimizationModeType | null>(null);
   const [outputFormat, setOutputFormat] = useState<OutputFormat>('Plain Text');
-  const [history, setHistory] = useState<{ input: string; output: string; mode: OptimizationModeType }[]>([]);
+  const [history, setHistory] = useState<{ input: string; output: string }[]>([]);
 
   const handleOptimize = async () => {
     if (!inputPrompt.trim()) return;
-    if (!optimizationMode) {
-      // If no optimization mode is selected, show a message or handle it appropriately
-      alert("Please select an optimization mode first");
-      return;
-    }
     
     setIsLoading(true);
     try {
-      const result = await optimizePrompt(inputPrompt, optimizationMode, outputFormat);
+      const result = await optimizePrompt(inputPrompt, outputFormat);
       setOptimizedPrompt(result);
       
       setHistory(prev => [
-        { input: inputPrompt, output: result, mode: optimizationMode },
+        { input: inputPrompt, output: result },
         ...prev.slice(0, 9)
       ]);
     } catch (error) {
@@ -59,40 +52,10 @@ export default function PromptOptimizer() {
           Prompt Optimizer
         </h2>
         <div className="space-y-4">
-          {/* Category 1: Input Prompt Enhancement Tools */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-4">
-              <OptimizationMode 
-                mode={optimizationMode} 
-                onModeChange={setOptimizationMode}
-                isLoading={isLoading}
-                onEnhance={async () => {
-                  if (!inputPrompt.trim()) {
-                    alert("Please enter a prompt first");
-                    return;
-                  }
-                  if (!optimizationMode) {
-                    alert("Please select an optimization mode first");
-                    return;
-                  }
-                  setIsLoading(true);
-                  try {
-                    const result = await optimizePrompt(inputPrompt, optimizationMode, 'Plain Text');
-                    setInputPrompt(result); // Update the input with the enhanced version
-                  } catch (error) {
-                    console.error('Error enhancing prompt:', error);
-                  } finally {
-                    setIsLoading(false);
-                  }
-                }} />
-            </div>
-          </div>
-
-          {/* Category 2: Output Format Specification */}
           <div className="space-y-2">
             <div className="flex items-center gap-4">
               <div className="flex flex-wrap gap-2">
-                {(['Plain Text', 'Markdown', 'JSON', 'XML', 'Bulleted List', 'Table'] as OutputFormat[]).map((format) => (
+                {(['Rewrite Perfectly', 'Plain Text', 'Markdown', 'JSON', 'XML', 'Bulleted List', 'Table'] as OutputFormat[]).map((format) => (
                   <button
                     key={format}
                     className={`px-3 py-1 text-xs font-semibold rounded-full transition-all duration-200 ${
@@ -151,12 +114,10 @@ export default function PromptOptimizer() {
                 onClick={() => {
                   setInputPrompt(item.input);
                   setOptimizedPrompt(item.output);
-                  setOptimizationMode(item.mode);
                 }}
               >
                 <div className="flex items-center justify-between">
                   <span className="truncate flex-1">{item.input.substring(0, 50)}{item.input.length > 50 ? '...' : ''}</span>
-                  <span className="text-xs glass px-2 py-1 rounded-full ml-2">{item.mode}</span>
                 </div>
               </div>
             ))}

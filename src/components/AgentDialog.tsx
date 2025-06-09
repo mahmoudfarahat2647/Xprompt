@@ -24,11 +24,12 @@ interface AgentDialogProps {
 }
 
 const OUTPUT_FORMATS = [
-  'Rewrite Perfectly',
-  'Clarify',
-  'Simplify',
-  'Expand',
-  'Shorten'
+  'Plain Text',
+  'Markdown',
+  'JSON', 
+  'XML',
+  'Bulleted List',
+  'Table'
 ];
 
 const PROVIDERS = {
